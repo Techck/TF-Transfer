@@ -2,10 +2,12 @@ package com.tf.transfer.constant;
 
 /**
  * @author huangyue
- * @date 2018/11/14 14:55
+ * @Package com.tf.transfer.constant
+ * @date 2018/11/15 20:27
  * @Description
  */
-public class BroadcastConstant {
+
+public class RxBusTagConstant {
 
     public static final String WRITE_SETTING_FAIL = "WRITE_SETTING_FAIL";
 

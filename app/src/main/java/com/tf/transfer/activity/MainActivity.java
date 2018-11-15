@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.tf.transfer.R;
 import com.tf.transfer.adapter.HomeFileAdapter;
+import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.constant.PermissionConstant;
 import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.dialog.QRCodeDialog;
@@ -69,7 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		initSwipeListView();
 		initSlidingMenu();
 
-		acTextView = (AutoCompleteTextView) findViewById(R.id.main_search);
+		acTextView = findViewById(R.id.main_search);
 		acTextView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, FileUtils.getFilesNames()));
 		acTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

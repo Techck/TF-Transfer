@@ -38,6 +38,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.ProgressCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.tf.transfer.R;
+import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.bean.QRCode;
 import com.tf.transfer.bean.TransferUser;
 import com.tf.transfer.util.AppUtil;
@@ -46,7 +47,7 @@ import com.tf.transfer.util.FileUtils;
 import com.tf.transfer.util.QRCodeUtil;
 import com.tf.transfer.database.SqliteAdapter;
 
-public class SDFileExplorerActivity extends BaseActivity{
+public class SDFileExplorerActivity extends BaseActivity {
 
 	public static final String TAG = "SDFileExplorerActivity";
 

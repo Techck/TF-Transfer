@@ -1,4 +1,4 @@
-package com.tf.transfer.activity;
+package com.tf.transfer.base;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -6,19 +6,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVAnalytics;
+import com.hwangjr.rxbus.RxBus;
 import com.tf.transfer.R;
 import com.tf.transfer.util.StatusBarUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -35,6 +33,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initSystemBarTint();
+        RxBus.get().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxBus.get().unregister(this);
     }
 
     @Override

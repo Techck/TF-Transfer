@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tf.transfer.R;
+import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.service.ReceiveFileFromNetworkService;
 import com.tf.transfer.service.ReceiveFileService;
 import com.tf.transfer.ui.wave.WaveView;

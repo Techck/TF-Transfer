@@ -1,11 +1,7 @@
 package com.tf.transfer.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -17,9 +13,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hwangjr.rxbus.RxBus;
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.tf.transfer.R;
+import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.bean.TransferUser;
-import com.tf.transfer.constant.BroadcastConstant;
+import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.database.SqliteAdapter;
 import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.ui.RippleLayout;
@@ -90,9 +91,6 @@ public class SendFileActivity extends BaseActivity implements View.OnClickListen
             start();
         }
         voiceUtils = new VoiceUtils(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BroadcastConstant.WRITE_SETTING_FAIL);
-        registerReceiver(br, intentFilter);
     }
 
     @Override
@@ -179,9 +177,7 @@ public class SendFileActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void sendTaskChangeBroadcast() {
-        Intent intent = new Intent();
-        intent.setAction(BroadcastConstant.CHANGE_TRANSFER_LIST);
-        sendBroadcast(intent);
+        RxBus.get().post(RxBusTagConstant.CHANGE_TRANSFER_LIST, "");
     }
 
     /**
@@ -226,7 +222,6 @@ public class SendFileActivity extends BaseActivity implements View.OnClickListen
         if (voiceUtils != null)
             voiceUtils.stopSend();
         flag = false;
-        unregisterReceiver(br);
     }
 
     @Override
@@ -234,19 +229,16 @@ public class SendFileActivity extends BaseActivity implements View.OnClickListen
         return true;
     }
 
-    BroadcastReceiver br = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // 提示
-            NormalDialog.show(getSupportFragmentManager(), getString(R.string.permission_tip_title)
-                    , getString(R.string.permission_tip_content), getString(R.string.system_setting)
-                    , new NormalDialog.OnClickListener() {
-                @Override
-                public void onClick(DialogFragment dialogFragment) {
-                    dialogFragment.dismiss();
-                    finish();
-                }
-            });
-        }
-    };
+    @Subscribe(thread = EventThread.MAIN_THREAD, tags = @Tag(RxBusTagConstant.WRITE_SETTING_FAIL))
+    public void writeSettingPermissionFailure(String temp) {
+        NormalDialog.show(getSupportFragmentManager(), getString(R.string.permission_tip_title)
+                , getString(R.string.permission_tip_content), getString(R.string.system_setting)
+                , new NormalDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogFragment dialogFragment) {
+                        dialogFragment.dismiss();
+                        finish();
+                    }
+                });
+    }
 }

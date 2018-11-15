@@ -14,7 +14,7 @@ public class SPUtil {
 
     public static String getUserName() {
         SharedPreferences sharedPreferences = UiUtils.mContext.get().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString("username", "TF");
+        return sharedPreferences.getString("username", "");
     }
 
     public static boolean setUserName(String newName) {

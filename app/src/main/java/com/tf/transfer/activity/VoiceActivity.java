@@ -3,7 +3,6 @@ package com.tf.transfer.activity;
 import java.lang.ref.WeakReference;
 import java.util.Random;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -12,10 +11,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 
 import com.tf.transfer.R;
 import com.avos.avoscloud.AVAnalytics;
+import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.ui.voiceline.VoiceLineView;
 import com.tf.transfer.util.VoiceUtils;
 import com.tf.transfer.util.VoiceUtils.VoiceListener;

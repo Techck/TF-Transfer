@@ -3,12 +3,12 @@ apply plugin: 'com.android.application'
 def leanCloud = rootProject.ext.leanCloud
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "com.tf.transfer"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 3
         versionName "2.0.1"
     }
@@ -37,6 +37,7 @@ dependencies {
     implementation files('libs/okhttp-2.6.0-leancloud.jar')
     implementation files('libs/okio-1.6.0-leancloud.jar')
 
-    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.hwangjr.rxbus:rxbus:1.0.6'
 }

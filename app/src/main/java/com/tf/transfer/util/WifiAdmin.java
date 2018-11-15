@@ -4,12 +4,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hwangjr.rxbus.RxBus;
 import com.tf.transfer.bean.TransferUser;
-import com.tf.transfer.constant.BroadcastConstant;
+import com.tf.transfer.constant.RxBusTagConstant;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -95,15 +95,15 @@ public class WifiAdmin {
             // 通过反射调用设置热点
             Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE); 
             // 返回热点打开状态
-            return (Boolean) method.invoke(wifiManager, apConfig, enabled); 
+            return (Boolean) method.invoke(wifiManager, apConfig, enabled);
         } catch (Exception e) {
 			if (e.getCause().getMessage().contains(Manifest.permission.WRITE_SETTINGS)) {
 				// 权限异常发广播提示用户到系统设置中给予权限
-				if (UiUtils.mContext.get() != null) {
-					Intent intent = new Intent();
-					intent.setAction(BroadcastConstant.WRITE_SETTING_FAIL);
-					UiUtils.mContext.get().sendBroadcast(intent);
-				}
+				RxBus.get().post(RxBusTagConstant.WRITE_SETTING_FAIL, "");
+//				if (UiUtils.mContext.get() != null) {
+//					Intent intent = new Intent(BroadcastConstant.WRITE_SETTING_FAIL);
+//					UiUtils.mContext.get().sendBroadcast(intent);
+//				}
 			}
         	e.printStackTrace();
         	return false;

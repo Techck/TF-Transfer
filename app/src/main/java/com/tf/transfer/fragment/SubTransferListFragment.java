@@ -1,9 +1,6 @@
 package com.tf.transfer.fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,19 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.tf.transfer.R;
 import com.tf.transfer.activity.SendFileActivity;
 import com.tf.transfer.adapter.TransferListAdapter;
+import com.tf.transfer.base.BaseFragment;
 import com.tf.transfer.bean.TaskRecord;
-import com.tf.transfer.constant.BroadcastConstant;
+import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.dialog.QRCodeDialog;
-import com.tf.transfer.util.DateUtil;
-import com.tf.transfer.util.ImageManager;
 import com.tf.transfer.util.SocketThreadFactory;
 import com.tf.transfer.database.SqliteAdapter;
 
@@ -38,7 +34,7 @@ import java.util.Map;
  * @Description
  */
 
-public class SubTransferListFragment extends Fragment {
+public class SubTransferListFragment extends BaseFragment {
 
     public static SubTransferListFragment create(int type) {
         Bundle bundle = new Bundle();
@@ -56,12 +52,6 @@ public class SubTransferListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         type = getArguments().getInt("type", -1);
-        if (type == 0) {
-            // 正在传输列表设置广播接收者，更新任务的变更
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(BroadcastConstant.CHANGE_TRANSFER_LIST);
-            getActivity().registerReceiver(br, intentFilter);
-        }
     }
 
     @Nullable
@@ -90,9 +80,6 @@ public class SubTransferListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (type == 0) {
-            getActivity().unregisterReceiver(br);
-        }
     }
 
     private void loadData() {
@@ -138,11 +125,10 @@ public class SubTransferListFragment extends Fragment {
         return list_task;
     }
 
-    BroadcastReceiver br = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            loadData();
-        }
-    };
+
+    @Subscribe(thread = EventThread.MAIN_THREAD, tags = {@Tag(RxBusTagConstant.CHANGE_TRANSFER_LIST)})
+    public void transferListChanged(String temp) {
+        loadData();
+    }
 
 }
