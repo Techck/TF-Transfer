@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+    <include layout="@layout/layout_title_bar" />
+    
+    <com.tf.transfer.ui.voiceline.VoiceLineView
+        android:id="@+id/voice_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:maxVolume="200"
+        app:middleLine="@android:color/holo_red_light"
+        app:middleLineHeight="1dp"
+        app:fineness="three"
+        app:rectSpace="2dp"
+        app:rectWidth="5dp"
+        app:sensibility="four"
+        app:viewMode="rect"
+        app:lineSpeed="90"
+        app:voiceLine="@android:color/holo_red_light" />
+    
+</LinearLayout>

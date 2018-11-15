@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+
+def leanCloud = rootProject.ext.leanCloud
+
+android {
+    compileSdkVersion 25
+
+    defaultConfig {
+        applicationId "com.tf.transfer"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 3
+        versionName "2.0.1"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+
+        buildTypes.each {
+            it.buildConfigField("String", "leanCloudApplicationId", leanCloud.applicationId)
+            it.buildConfigField("String", "leanCloudClientKey", leanCloud.clientKey)
+        }
+    }
+}
+
+dependencies {
+    implementation files('libs/avoscloud-sdk-v3.16.jar')
+    implementation files('libs/avoscloud-statistics-v3.16.jar')
+    implementation files('libs/core-2.3-SNAPSHOT.jar')
+    implementation files('libs/fastjson.jar')
+    implementation files('libs/httpmime-4.2.4.jar')
+    implementation files('libs/javase-2.3-SNAPSHOT.jar')
+    implementation files('libs/nineoldandroids-2.4.0.jar')
+    implementation files('libs/okhttp-2.6.0-leancloud.jar')
+    implementation files('libs/okio-1.6.0-leancloud.jar')
+
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TF快传</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="title_activity_barcode_scan">QRcode Scan Activity</string>
+    <string name="scaned_text"></string>
+    <string name="scan">Scan</string>
+    
+    <string name="title_activity_qrcode_generate">QRCode Generate Activity</string>
+    <string name="qrcode_generate">Generate</string>
+    <string name="scan_text">将二维码放入框内, 即可自动扫描</string>
+    <string name="edittext_content">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_</string>
+
+    <string name="permission_tip_title">应用未获取到相关权限</string>
+    <string name="permission_tip_content">请在"系统设置-权限管理"中打开【TF快传】的以下权限</string>
+
+    <string name="system_setting">系统设置</string>
+    <string name="camera">相机</string>
+    <string name="read_write_phone_storage">读写手机存储</string>
+    <string name="record_audio">录音</string>
+
+    <string name="send_file_qrcode_tip">扫描该二维码接收文件</string>
+    <string name="send_file_voice_tip">调大音量靠近接收文件的手机</string>
+
+</resources>
