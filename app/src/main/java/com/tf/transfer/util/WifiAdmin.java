@@ -100,10 +100,6 @@ public class WifiAdmin {
 			if (e.getCause().getMessage().contains(Manifest.permission.WRITE_SETTINGS)) {
 				// 权限异常发广播提示用户到系统设置中给予权限
 				RxBus.get().post(RxBusTagConstant.WRITE_SETTING_FAIL, "");
-//				if (UiUtils.mContext.get() != null) {
-//					Intent intent = new Intent(BroadcastConstant.WRITE_SETTING_FAIL);
-//					UiUtils.mContext.get().sendBroadcast(intent);
-//				}
 			}
         	e.printStackTrace();
         	return false;
