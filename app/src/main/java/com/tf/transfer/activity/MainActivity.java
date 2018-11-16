@@ -206,35 +206,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "receive");
-				drawerLayout.closeDrawers();
-				//打开接收文件的提示框
-				if (dialog == null) {
-					dialog = new ReceiveChooseDialog();
-					dialog.setListener(new ReceiveChooseDialog.OnReceiveChooseListener() {
-						@Override
-						public void click(int index) {
-							if (index == 0) {
-								// 扫描二维码
-            					// 检查权限
-								if (AppUtil.checkPermission(MainActivity.this, Manifest.permission.CAMERA)) {
-									jumpScanActivity();
-								} else {
-									ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, PermissionConstant.PERMISSION_REQUEST_CODE_FOR_CAMERA);
-								}
-							} else {
-								// 识别声波
-                                // 权限检查
-                                if (AppUtil.checkPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)) {
-                                    jumpRecordAudioActivity();
-                                } else {
-                                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, PermissionConstant.PERMISSION_REQUEST_CODE_FOR_RECORD_AUDIO);
-                                }
-
-							}
-						}
-					});
-				}
-				dialog.show(getSupportFragmentManager(), "");
+				showReceiveChooseDialog();
 			}
 		});
 	}
@@ -367,6 +339,41 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	}
 
 	/**
+	 * 显示接收文件的方式对话框
+	 */
+	private void showReceiveChooseDialog() {
+		drawerLayout.closeDrawers();
+		//打开接收文件的提示框
+		if (dialog == null) {
+			dialog = new ReceiveChooseDialog();
+			dialog.setListener(new ReceiveChooseDialog.OnReceiveChooseListener() {
+				@Override
+				public void click(int index) {
+					if (index == 0) {
+						// 扫描二维码
+						// 检查权限
+						if (AppUtil.checkPermission(MainActivity.this, Manifest.permission.CAMERA)) {
+							jumpScanActivity();
+						} else {
+							ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, PermissionConstant.PERMISSION_REQUEST_CODE_FOR_CAMERA);
+						}
+					} else {
+						// 识别声波
+						// 权限检查
+						if (AppUtil.checkPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)) {
+							jumpRecordAudioActivity();
+						} else {
+							ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, PermissionConstant.PERMISSION_REQUEST_CODE_FOR_RECORD_AUDIO);
+						}
+
+					}
+				}
+			});
+		}
+		dialog.show(getSupportFragmentManager(), "");
+	}
+
+	/**
 	 * 根据当前type获取文件列表
 	 */
 	private void getFileList(){
@@ -462,14 +469,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 					}
 				}
 				break;
-        	case 3:
+        	case 3: // 勾选文件
                 if(resultCode == RESULT_OK) {
                     if (data == null) return;
                     int flag = data.getIntExtra("flag", 0);
                     if (flag == 1) {
-                        SendFileActivity.start(MainActivity.this, data.getLongExtra("id", 0), data.getStringExtra("qrCode_path"), false);
+                        SendFileActivity.start(MainActivity.this, Long.parseLong(data.getStringExtra("id")), data.getStringExtra("qrCodePath"), false);
                     } else if (flag == 2) {
-                        showQRCodeDialog(data.getStringExtra("objectId"), data.getStringExtra("qrCode_path"));
+                        showQRCodeDialog(data.getStringExtra("id"), data.getStringExtra("qrCodePath"));
                     }
                 }
 				break;

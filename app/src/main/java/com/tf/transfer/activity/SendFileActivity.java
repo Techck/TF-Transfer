@@ -203,7 +203,7 @@ public class SendFileActivity extends BaseActivity implements View.OnClickListen
         if(is){
             try {
                 //得到文件列表
-                SqliteAdapter adapter = new SqliteAdapter(getApplicationContext());
+                SqliteAdapter adapter = SqliteAdapter.getInstance();
                 ArrayList<String> list = adapter.getTaskDetail(id);
                 //将文件列表添加到map中
                 Map<String, Object> map = new HashMap<>();

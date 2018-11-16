@@ -63,7 +63,7 @@ public class ReceiveFileService extends IntentService{
 									    	is = false;
 									    	if(id != 0){
 												System.out.println("任务id："+id);
-												SqliteAdapter adapter = new SqliteAdapter(getApplicationContext());
+												SqliteAdapter adapter = SqliteAdapter.getInstance();
 												System.out.println("1      "+code);
 												NoFinishTask noFinishTask = adapter.getNoFinishTask(code, id);
 												new MyClientThread(id, ip, listener, noFinishTask).start();
@@ -83,7 +83,7 @@ public class ReceiveFileService extends IntentService{
 			});
 		}else{
 			System.out.println("任务id："+id);
-			SqliteAdapter adapter = new SqliteAdapter(getApplicationContext());
+			SqliteAdapter adapter = SqliteAdapter.getInstance();
 			System.out.println("1      "+code);
 			NoFinishTask noFinishTask = adapter.getNoFinishTask(code, id);
 			new MyClientThread(id, ip, listener, noFinishTask).start();
@@ -122,7 +122,7 @@ public class ReceiveFileService extends IntentService{
 				//没连接上  取消传输
 				handler.sendEmptyMessage(4);
 			}else{
-				SqliteAdapter adapter = new SqliteAdapter(getApplicationContext());
+				SqliteAdapter adapter = SqliteAdapter.getInstance();
 				System.out.println("连接中断，已传输:"+id+"  "+code+"  "+file+"  "+length);
 				adapter.addNoFinishTask(new NoFinishTask(id, code, file, length));
 				handler.sendEmptyMessage(5);

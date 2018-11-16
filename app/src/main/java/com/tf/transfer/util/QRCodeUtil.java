@@ -19,11 +19,12 @@ public class QRCodeUtil {
 
     public static Bitmap generateQRCode(String content) {
         try {
+            if (content == null || content.isEmpty()) return null;
             QRCodeWriter writer = new QRCodeWriter();
             // MultiFormatWriter writer = new MultiFormatWriter();
             BitMatrix matrix = writer.encode(content, BarcodeFormat.QR_CODE, 500, 500);
             return bitMatrix2Bitmap(matrix);
-        } catch (WriterException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

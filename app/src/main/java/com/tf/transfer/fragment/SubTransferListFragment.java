@@ -94,7 +94,7 @@ public class SubTransferListFragment extends BaseFragment {
     //获取历史记录列表
     private ArrayList<TaskRecord> getHistoryList(){
         ArrayList<TaskRecord> list = new ArrayList<>();
-        SqliteAdapter adapter = new SqliteAdapter(getActivity());
+        SqliteAdapter adapter = SqliteAdapter.getInstance();
         Cursor cursor = adapter.getTask();
         while(cursor.moveToNext()){
             list.add(new TaskRecord(cursor.getLong(cursor.getColumnIndex("_id")),
@@ -108,7 +108,7 @@ public class SubTransferListFragment extends BaseFragment {
 
     //获取当前记录列表
     private ArrayList<TaskRecord> getCurrentList(){
-        SqliteAdapter adapter = new SqliteAdapter(getActivity());
+        SqliteAdapter adapter = SqliteAdapter.getInstance();
         ArrayList<Map<String, Object>> list_path = SocketThreadFactory.getCurrentTaskList();
         ArrayList<TaskRecord> list_task = new ArrayList<>();
         for(int i = 0;i<list_path.size();i++){

@@ -3,6 +3,7 @@ package com.tf.transfer.database;
 import java.util.ArrayList;
 
 import com.tf.transfer.bean.NoFinishTask;
+import com.tf.transfer.util.UiUtils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,9 +13,20 @@ import android.database.sqlite.SQLiteDatabase;
 public class SqliteAdapter {
 	
 	private SqliteOpenHelper helper;
-	
-	
-	public SqliteAdapter(Context context) {
+	private static SqliteAdapter mInstance;
+
+	public static SqliteAdapter getInstance() {
+		if (mInstance == null) {
+			synchronized(SqliteAdapter.class) {
+				if (mInstance == null) {
+					mInstance = new SqliteAdapter(UiUtils.mContext.get());
+				}
+			}
+		}
+		return mInstance;
+	}
+
+	private SqliteAdapter(Context context) {
 		super();
 		this.helper = new SqliteOpenHelper(context);
 	}
