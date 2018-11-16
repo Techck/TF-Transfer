@@ -84,7 +84,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		initSlidingMenu();
 
 		adContainer = findViewById(R.id.ad_container);
-		checkAndRequestPermission();
 
 		acTextView = findViewById(R.id.main_search);
 		acTextView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, FileUtils.getFilesNames()));
@@ -100,6 +99,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.main_transfer).setOnClickListener(this);
 		findViewById(R.id.main_setting).setOnClickListener(this);
 		findViewById(R.id.main_transfer_list).setOnClickListener(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		checkAndRequestPermission();
 	}
 
 	@Override
@@ -154,19 +159,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	}
 
 	private void initBannerAd() {
+		if (bannerView != null) return;
 		bannerView = new BannerView(this, ADSize.BANNER, BuildConfig.GDTAdIdAppId, BuildConfig.GDTAdIdhomeBanner);
         bannerView.setRefresh(30);
+		bannerView.setShowClose(true);
         bannerView.setADListener(new AbstractBannerADListener() {
 
 			@Override
 			public void onNoAD(AdError error) {
-				Log.i("AD_DEMO", String.format("Banner onNoAD，eCode = %d, eMsg = %s", error.getErrorCode(), error.getErrorMsg()));
 			}
 
 			@Override
 			public void onADReceiv() {
-				Log.i("AD_DEMO", "ONBannerReceive");
 			}
+
+			@Override
+			public void onADClosed() {
+				super.onADClosed();
+				adContainer.removeAllViews();
+				bannerView.destroy();
+				bannerView = null;
+			}
+
 		});
 		adContainer.addView(bannerView);
 		bannerView.loadAD();
@@ -226,7 +240,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	}
 
 	private void initSwipeListView() {
-		SwipeMenuListView mListView = (SwipeMenuListView) findViewById(R.id.main_listview);
+		SwipeMenuListView mListView = findViewById(R.id.main_listview);
 		mListView.setMenuCreator(new SwipeMenuCreator() {
 
 			@Override
@@ -282,11 +296,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	}
 
 	private void initCategoryBar() {
-		fileTypeButtons[0] =  (Button) findViewById(R.id.main_photo);
-		fileTypeButtons[1] =  (Button) findViewById(R.id.main_doc);
-		fileTypeButtons[2] =  (Button) findViewById(R.id.main_vedio);
-		fileTypeButtons[3] =  (Button) findViewById(R.id.main_music);
-		fileTypeButtons[4] =  (Button) findViewById(R.id.main_other);
+		fileTypeButtons[0] = findViewById(R.id.main_photo);
+		fileTypeButtons[1] = findViewById(R.id.main_doc);
+		fileTypeButtons[2] = findViewById(R.id.main_vedio);
+		fileTypeButtons[3] = findViewById(R.id.main_music);
+		fileTypeButtons[4] = findViewById(R.id.main_other);
 		fileTypeButtons[0].setOnClickListener(this);
 		fileTypeButtons[1].setOnClickListener(this);
 		fileTypeButtons[2].setOnClickListener(this);
