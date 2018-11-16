@@ -2,17 +2,22 @@ package com.tf.transfer.activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +26,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -28,6 +34,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.qq.e.ads.banner.ADSize;
+import com.qq.e.ads.banner.AbstractBannerADListener;
+import com.qq.e.ads.banner.BannerView;
+import com.qq.e.comm.util.AdError;
+import com.tf.transfer.BuildConfig;
 import com.tf.transfer.R;
 import com.tf.transfer.adapter.HomeFileAdapter;
 import com.tf.transfer.base.BaseActivity;
@@ -56,6 +67,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	private Button[] fileTypeButtons = new Button[5];
 	private AutoCompleteTextView acTextView;
 	private DrawerLayout drawerLayout;
+	private ViewGroup adContainer;
+	private BannerView bannerView;
 	private ArrayList<File> list_file = new ArrayList<>();
 	private HomeFileAdapter adapter;
 	private ReceiveChooseDialog dialog;
@@ -69,6 +82,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		initCategoryBar();
 		initSwipeListView();
 		initSlidingMenu();
+
+		adContainer = findViewById(R.id.ad_container);
+		checkAndRequestPermission();
 
 		acTextView = findViewById(R.id.main_search);
 		acTextView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, FileUtils.getFilesNames()));
@@ -137,8 +153,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		}
 	}
 
+	private void initBannerAd() {
+		bannerView = new BannerView(this, ADSize.BANNER, BuildConfig.GDTAdIdAppId, BuildConfig.GDTAdIdhomeBanner);
+        bannerView.setRefresh(30);
+        bannerView.setADListener(new AbstractBannerADListener() {
+
+			@Override
+			public void onNoAD(AdError error) {
+				Log.i("AD_DEMO", String.format("Banner onNoAD，eCode = %d, eMsg = %s", error.getErrorCode(), error.getErrorMsg()));
+			}
+
+			@Override
+			public void onADReceiv() {
+				Log.i("AD_DEMO", "ONBannerReceive");
+			}
+		});
+		adContainer.addView(bannerView);
+		bannerView.loadAD();
+	}
+
 	private void initSlidingMenu() {
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+		drawerLayout = findViewById(R.id.drawerLayout);
 		findViewById(R.id.send_file).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -317,11 +352,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		dialog.show(getSupportFragmentManager(), "");
 	}
 
-	//根据当前type获取文件列表
+	/**
+	 * 根据当前type获取文件列表
+	 */
 	private void getFileList(){
 		list_file = FileUtils.getFiles(type);
 	}
 
+	/**
+	 * 展示申请权限失败对话框
+	 */
 	private void showPermissionDialog(final String permission) {
 		pullRunnable(new Runnable() {
 			@Override
@@ -330,6 +370,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 						, getString(R.string.permission_tip_content), permission, null);
 			}
 		});
+	}
+
+	/**
+	 * 检查加载广点通广告的权限
+	 */
+	@TargetApi(Build.VERSION_CODES.M)
+	private void checkAndRequestPermission() {
+		List<String> lackedPermission = new ArrayList<>();
+		if (!AppUtil.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+			lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
+		}
+
+		if (!AppUtil.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		}
+
+		if (!AppUtil.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+			lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
+		}
+
+		// 权限都已经有了，那么直接调用SDK
+		if (lackedPermission.size() == 0) {
+			initBannerAd();
+		} else {
+			String[] requestPermissions = new String[lackedPermission.size()];
+			lackedPermission.toArray(requestPermissions);
+			requestPermissions(requestPermissions, PermissionConstant.PERMISSION_REQUEST_CODE_FOR_GDT_AD);
+		}
 	}
 	
 	@Override
@@ -417,7 +485,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             } else {
 				showPermissionDialog(getString(R.string.record_audio));
             }
-        }
+        } else if (PermissionConstant.PERMISSION_REQUEST_CODE_FOR_GDT_AD == requestCode) {
+			for (int result : grantResults) {
+				if (PackageManager.PERMISSION_GRANTED != result) {
+					// 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
+					Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
+					Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+					intent.setData(Uri.parse("package:" + getPackageName()));
+					startActivity(intent);
+					return;
+				}
+			}
+			initBannerAd();
+		}
     }
 
     @Override

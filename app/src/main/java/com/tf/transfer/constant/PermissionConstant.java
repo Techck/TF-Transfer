@@ -14,4 +14,6 @@ public class PermissionConstant {
     public static final int PERMISSION_REQUEST_CODE_FOR_SETTING = 1003;
 
     public static final int PERMISSION_REQUEST_CODE_FOR_RECORD_AUDIO = 1004;
+
+    public static final int PERMISSION_REQUEST_CODE_FOR_GDT_AD = 1005;
 }

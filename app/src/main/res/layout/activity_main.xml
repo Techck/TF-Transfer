@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="#ffffff">
 
         <View
@@ -18,7 +19,6 @@
             android:id="@+id/main_title"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_below="@id/blankView"
             android:background="@color/theme_color">
 
             <ImageView
@@ -53,19 +53,6 @@
                 android:textSize="14sp" />
 
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/main_transfer_list"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/corners_bg_button"
-            android:text="传输列表"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/main_button"
@@ -134,14 +121,31 @@
         <com.tf.transfer.ui.swipemenulistview.SwipeMenuListView
             android:id="@+id/main_listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/main_transfer_list"
-            android:layout_below="@id/main_button"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginBottom="20dp"
             android:divider="#cbcaca"
             android:dividerHeight="0.1dp" />
 
-    </RelativeLayout>
+        <Button
+            android:id="@+id/main_transfer_list"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/corners_bg_button"
+            android:text="传输列表"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+        
+        <FrameLayout
+            android:id="@+id/ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <include
         layout="@layout/slide_menu"
