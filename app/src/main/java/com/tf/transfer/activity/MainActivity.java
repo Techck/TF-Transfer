@@ -44,6 +44,7 @@ import com.tf.transfer.ui.swipemenulistview.SwipeMenuCreator;
 import com.tf.transfer.ui.swipemenulistview.SwipeMenuItem;
 import com.tf.transfer.ui.swipemenulistview.SwipeMenuListView;
 import com.tf.transfer.ui.zxing.MipcaActivityCapture;
+import com.tf.transfer.util.ActionEventManager;
 import com.tf.transfer.util.AppUtil;
 import com.tf.transfer.util.FileUtils;
 import com.tf.transfer.util.UiUtils;
@@ -354,6 +355,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (requestCode) {
 			case 1:	// 扫描二维码
 				if (resultCode == RESULT_OK) {
+					ActionEventManager.send(ActionEventManager.RECEIVE_FILE_BY_SCAN);
                     if (data == null) return;
 					Bundle bundle = data.getExtras();
 					if (bundle == null) return;
@@ -381,6 +383,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 				break;
 			case 2:	// 识别声波
 				if(resultCode == RESULT_OK){
+					ActionEventManager.send(ActionEventManager.RECEIVE_FILE_BY_VOICE);
 					String str = data.getStringExtra("result");
 					Log.d("MainActivity", "识别到的内容："+str);
 					String[] strs = str.split("@");

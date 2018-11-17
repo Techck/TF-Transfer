@@ -38,6 +38,7 @@ import com.tf.transfer.business.NativeTaskStrategy;
 import com.tf.transfer.business.NetworkTaskStrategy;
 import com.tf.transfer.business.TaskPrepareStrategy;
 import com.tf.transfer.dialog.NormalDialog;
+import com.tf.transfer.util.ActionEventManager;
 import com.tf.transfer.util.AppUtil;
 import com.tf.transfer.util.DateUtil;
 import com.tf.transfer.util.FileUtils;
@@ -97,6 +98,7 @@ public class SDFileExplorerActivity extends BaseActivity {
 						strategy = new NetworkTaskStrategy(new TaskPrepareStrategy.Callback() {
 							@Override
 							public void success(String id, String qrCodePath) {
+								ActionEventManager.send(ActionEventManager.CREATE_NETWORK_TASK);
 								setResult(2, id, qrCodePath);
 							}
 
@@ -119,6 +121,7 @@ public class SDFileExplorerActivity extends BaseActivity {
 						strategy = new NativeTaskStrategy(new TaskPrepareStrategy.Callback() {
 							@Override
 							public void success(String id, String qrCodePath) {
+								ActionEventManager.send(ActionEventManager.CREATE_NATIVE_TASK);
 								setResult(1, id, qrCodePath);
 							}
 

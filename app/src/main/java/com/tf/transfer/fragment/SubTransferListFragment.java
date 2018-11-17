@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import com.tf.transfer.base.BaseFragment;
 import com.tf.transfer.bean.TaskRecord;
 import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.dialog.QRCodeDialog;
+import com.tf.transfer.util.ActionEventManager;
 import com.tf.transfer.util.SocketThreadFactory;
 import com.tf.transfer.database.SqliteAdapter;
 
@@ -58,7 +58,7 @@ public class SubTransferListFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_list, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.transfer_list_view);
+        ListView listView = view.findViewById(R.id.transfer_list_view);
         listView.setAdapter(adapter = new TransferListAdapter(getContext()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
@@ -66,8 +66,10 @@ public class SubTransferListFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 TaskRecord record = list.get(arg2);
                 if (record.getType() == 2) {
+                    ActionEventManager.send(ActionEventManager.RESTART_NETWORK_TASK);
                     QRCodeDialog.show(getFragmentManager(), record.getRemark(), record.getQrCode_path());
                 } else {
+                    ActionEventManager.send(ActionEventManager.RESTART_NATIVE_TASK);
                     SendFileActivity.start(getActivity(), record.getId(), record.getQrCode_path(), false);
                 }
             }
@@ -125,10 +127,9 @@ public class SubTransferListFragment extends BaseFragment {
         return list_task;
     }
 
-
     @Subscribe(thread = EventThread.MAIN_THREAD, tags = {@Tag(RxBusTagConstant.CHANGE_TRANSFER_LIST)})
     public void transferListChanged(String temp) {
-        loadData();
+        if (type == 0) loadData();
     }
 
 }
