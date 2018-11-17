@@ -37,6 +37,7 @@ import com.tf.transfer.bean.TransferUser;
 import com.tf.transfer.business.NativeTaskStrategy;
 import com.tf.transfer.business.NetworkTaskStrategy;
 import com.tf.transfer.business.TaskPrepareStrategy;
+import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.util.AppUtil;
 import com.tf.transfer.util.DateUtil;
 import com.tf.transfer.util.FileUtils;
@@ -100,9 +101,9 @@ public class SDFileExplorerActivity extends BaseActivity {
 							}
 
 							@Override
-							public void failure() {
+							public void failure(String text) {
 								progressDialog.dismiss();
-								Toast.makeText(SDFileExplorerActivity.this, "文件上传失败", Toast.LENGTH_SHORT).show();
+								NormalDialog.show(getSupportFragmentManager(), getString(R.string.tip), text, null);
 							}
 
 							@Override
@@ -122,8 +123,8 @@ public class SDFileExplorerActivity extends BaseActivity {
 							}
 
 							@Override
-							public void failure() {
-								Toast.makeText(SDFileExplorerActivity.this, "创建任务失败", Toast.LENGTH_SHORT).show();
+							public void failure(String text) {
+								NormalDialog.show(getSupportFragmentManager(), getString(R.string.tip), text, null);
 							}
 
 							@Override

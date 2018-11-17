@@ -9,10 +9,13 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.ProgressCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.tf.transfer.R;
 import com.tf.transfer.database.SqliteAdapter;
+import com.tf.transfer.util.CustomParamManager;
 import com.tf.transfer.util.DateUtil;
 import com.tf.transfer.util.FileUtils;
 import com.tf.transfer.util.QRCodeUtil;
+import com.tf.transfer.util.UiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,14 @@ public class NetworkTaskStrategy extends TaskPrepareStrategy {
 
     @Override
     public void doWork(List<Map<String, String>> list) {
+        // 检查是否可以上传
+        if (!CustomParamManager.canUpload()) {
+            String text = "unknown reason";
+            if (UiUtils.mContext.get() != null)
+                text = UiUtils.mContext.get().getString(R.string.can_not_send_file_to_network);
+            if (callback != null) callback.failure(text);
+            return;
+        }
         fileList = list;
         index = 0;
         if (fileList.size() > 0) {
@@ -54,7 +65,7 @@ public class NetworkTaskStrategy extends TaskPrepareStrategy {
             file.saveInBackground(saveCallback, progressCallback);
         } catch (Exception e) {
             e.printStackTrace();
-            if (callback != null) callback.failure();
+            if (callback != null) callback.failure("文件上传失败");
         }
     }
 
@@ -62,7 +73,7 @@ public class NetworkTaskStrategy extends TaskPrepareStrategy {
         @Override
         public void done(AVException e) {
             if (e != null) {
-                if (callback != null) callback.failure();
+                if (callback != null) callback.failure("文件上传失败");
                 return;
             }
             idList.add(file.getObjectId());
@@ -90,7 +101,7 @@ public class NetworkTaskStrategy extends TaskPrepareStrategy {
             @Override
             public void done(AVException e) {
                 if (e != null) {
-                    if (callback != null) callback.failure();
+                    if (callback != null) callback.failure("文件上传失败");
                     return;
                 }
                 String taskId = task.getObjectId();

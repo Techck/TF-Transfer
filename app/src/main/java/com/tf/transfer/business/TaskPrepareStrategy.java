@@ -20,7 +20,7 @@ public abstract class TaskPrepareStrategy {
 
     public interface Callback {
         void success(String id, String qrCodePath);
-        void failure();
+        void failure(String text);
         void progress(String text);
     }
 }

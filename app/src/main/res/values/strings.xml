@@ -25,4 +25,7 @@
     <string name="send_file_qrcode_tip">扫描该二维码接收文件</string>
     <string name="send_file_voice_tip">调大音量靠近接收文件的手机</string>
 
+    <string name="tip">提示</string>
+    <string name="can_not_send_file_to_network">暂时不允许上传至服务器！</string>
+
 </resources>

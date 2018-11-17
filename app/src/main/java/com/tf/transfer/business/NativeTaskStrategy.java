@@ -39,7 +39,7 @@ public class NativeTaskStrategy extends TaskPrepareStrategy {
         String qrCode_path = getQRCodeCachePath(id, create_time);
         if (qrCode_path == null) {
             adapter.deleteTask(id);
-            if (callback != null) callback.failure();
+            if (callback != null) callback.failure("创建任务失败");
             return;
         }
         // 更新二维码到数据库中
