@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	private ArrayList<File> list_file = new ArrayList<>();
 	private HomeFileAdapter adapter;
 	private ReceiveChooseDialog dialog;
-	private int type = 1;//照片1  文档2  视频3  音乐4  其他5
+	private int type = FileUtils.PHOTO;//照片1  文档2  视频3  音乐4  其他5
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -221,6 +221,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		});
 		adapter = new HomeFileAdapter();
 		mListView.setAdapter(adapter);
+		list_file = FileUtils.getFiles(FileUtils.PHOTO);
+		adapter.setType(type);
+		adapter.setFiles(list_file);
 	}
 
 	private void initCategoryBar() {

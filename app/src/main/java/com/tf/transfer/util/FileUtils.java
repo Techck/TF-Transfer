@@ -163,7 +163,7 @@ public class FileUtils {
 		if (fileNames.length < 2) {
 			return false;
 		}
-		String fileType = fileNames[1];
+		String fileType = fileNames[fileNames.length - 1];
 		for(int i = 0;i<fileTypes.length;i++){
 			if(fileTypes[i].equals(fileType.toLowerCase(Locale.getDefault()))){
 				return true;

@@ -12,7 +12,6 @@ import com.tf.transfer.util.ImageManager;
 import com.tf.transfer.util.UiUtils;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,10 +62,10 @@ public class HomeFileAdapter extends BaseAdapter {
         TextView tv_name;
         TextView tv_size;
 
-        public ViewHolder(View view) {
-            iv_icon = (ImageView) view.findViewById(R.id.item_main_image);
-            tv_name = (TextView) view.findViewById(R.id.item_main_name);
-            tv_size = (TextView) view.findViewById(R.id.item_main_size);
+        private ViewHolder(View view) {
+            iv_icon = view.findViewById(R.id.item_main_image);
+            tv_name = view.findViewById(R.id.item_main_name);
+            tv_size = view.findViewById(R.id.item_main_size);
             view.setTag(this);
         }
     }
@@ -75,12 +74,14 @@ public class HomeFileAdapter extends BaseAdapter {
         switch (type) {
             case 2:
                 String[] fileNames = fileName.split("\\.");
-                if(fileNames[1].equals("doc"))
-                    return R.mipmap.doc_90;
-                else if(fileNames[1].equals("xls"))
-                    return R.mipmap.xls_90;
-                else if(fileNames[1].equals("ppt"))
-                    return R.mipmap.ppt_90;
+                switch (fileNames[fileNames.length - 1]) {
+                    case "doc":
+                        return R.mipmap.doc_90;
+                    case "xls":
+                        return R.mipmap.xls_90;
+                    case "ppt":
+                        return R.mipmap.ppt_90;
+                }
             case 3:
                 return R.mipmap.vedio_90;
             case 4:
