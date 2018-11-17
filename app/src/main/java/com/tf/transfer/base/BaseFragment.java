@@ -3,7 +3,9 @@ package com.tf.transfer.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.hwangjr.rxbus.RxBus;
 
 /**
@@ -24,5 +26,17 @@ public class BaseFragment extends Fragment {
     public void onDestroy() {
         RxBus.get().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AVAnalytics.onFragmentStart(this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        AVAnalytics.onFragmentEnd(this.getClass().getSimpleName());
     }
 }

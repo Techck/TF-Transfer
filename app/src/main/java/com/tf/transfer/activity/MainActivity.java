@@ -2,22 +2,17 @@ package com.tf.transfer.activity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONObject;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,7 +21,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -34,15 +28,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.qq.e.ads.banner.ADSize;
-import com.qq.e.ads.banner.AbstractBannerADListener;
-import com.qq.e.ads.banner.BannerView;
-import com.qq.e.comm.util.AdError;
-import com.tf.transfer.BuildConfig;
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.tf.transfer.R;
 import com.tf.transfer.adapter.HomeFileAdapter;
 import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.constant.PermissionConstant;
+import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.dialog.QRCodeDialog;
 import com.tf.transfer.dialog.ReceiveChooseDialog;
@@ -67,8 +60,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	private Button[] fileTypeButtons = new Button[5];
 	private AutoCompleteTextView acTextView;
 	private DrawerLayout drawerLayout;
-	private ViewGroup adContainer;
-	private BannerView bannerView;
 	private ArrayList<File> list_file = new ArrayList<>();
 	private HomeFileAdapter adapter;
 	private ReceiveChooseDialog dialog;
@@ -82,8 +73,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		initCategoryBar();
 		initSwipeListView();
 		initSlidingMenu();
-
-		adContainer = findViewById(R.id.ad_container);
 
 		acTextView = findViewById(R.id.main_search);
 		acTextView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, FileUtils.getFilesNames()));
@@ -99,12 +88,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.main_transfer).setOnClickListener(this);
 		findViewById(R.id.main_setting).setOnClickListener(this);
 		findViewById(R.id.main_transfer_list).setOnClickListener(this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		checkAndRequestPermission();
 	}
 
 	@Override
@@ -156,34 +139,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 				setButtonColor();
 				break;
 		}
-	}
-
-	private void initBannerAd() {
-		if (bannerView != null) return;
-		bannerView = new BannerView(this, ADSize.BANNER, BuildConfig.GDTAdIdAppId, BuildConfig.GDTAdIdhomeBanner);
-        bannerView.setRefresh(30);
-		bannerView.setShowClose(true);
-        bannerView.setADListener(new AbstractBannerADListener() {
-
-			@Override
-			public void onNoAD(AdError error) {
-			}
-
-			@Override
-			public void onADReceiv() {
-			}
-
-			@Override
-			public void onADClosed() {
-				super.onADClosed();
-				adContainer.removeAllViews();
-				bannerView.destroy();
-				bannerView = null;
-			}
-
-		});
-		adContainer.addView(bannerView);
-		bannerView.loadAD();
 	}
 
 	private void initSlidingMenu() {
@@ -392,34 +347,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 			}
 		});
 	}
-
-	/**
-	 * 检查加载广点通广告的权限
-	 */
-	@TargetApi(Build.VERSION_CODES.M)
-	private void checkAndRequestPermission() {
-		List<String> lackedPermission = new ArrayList<>();
-		if (!AppUtil.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-			lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
-		}
-
-		if (!AppUtil.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-			lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-		}
-
-		if (!AppUtil.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-			lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-		}
-
-		// 权限都已经有了，那么直接调用SDK
-		if (lackedPermission.size() == 0) {
-			initBannerAd();
-		} else {
-			String[] requestPermissions = new String[lackedPermission.size()];
-			lackedPermission.toArray(requestPermissions);
-			requestPermissions(requestPermissions, PermissionConstant.PERMISSION_REQUEST_CODE_FOR_GDT_AD);
-		}
-	}
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -506,20 +433,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             } else {
 				showPermissionDialog(getString(R.string.record_audio));
             }
-        } else if (PermissionConstant.PERMISSION_REQUEST_CODE_FOR_GDT_AD == requestCode) {
-			for (int result : grantResults) {
-				if (PackageManager.PERMISSION_GRANTED != result) {
-					// 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
-					Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
-					Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-					intent.setData(Uri.parse("package:" + getPackageName()));
-					startActivity(intent);
-					return;
-				}
-			}
-			initBannerAd();
-		}
+        }
     }
+
+    @Subscribe(thread = EventThread.MAIN_THREAD, tags = {@Tag(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE)})
+    public void mainBannerAdShow(String temp) {
+		checkAndRequestAdPermission();
+	}
 
     @Override
 	protected void onDestroy() {

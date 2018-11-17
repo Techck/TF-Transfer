@@ -7,10 +7,16 @@ import android.util.Log;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVOnlineConfigureListener;
+import com.hwangjr.rxbus.RxBus;
 import com.tf.transfer.bean.TransferUser;
+import com.tf.transfer.constant.RxBusTagConstant;
+import com.tf.transfer.util.CustomParamManager;
 import com.tf.transfer.util.FileUtils;
 import com.tf.transfer.util.SPUtil;
 import com.tf.transfer.util.UiUtils;
+
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
@@ -23,14 +29,26 @@ import java.lang.ref.WeakReference;
 
 public class MyApplication extends Application {
 
+    private boolean firstOnlineDataReceived = true;
+
     @Override
     public void onCreate() {
         super.onCreate();
         UiUtils.mContext = new WeakReference<Context>(this);
         AVOSCloud.initialize(this, BuildConfig.leanCloudApplicationId, BuildConfig.leanCloudClientKey);
-        //开启统计SDK
+        // 开启统计SDK
         AVAnalytics.enableCrashReport(this, true);
-        //设置用户名
+        // 设置用户名
         TransferUser.getInstance().setUsername(SPUtil.getUserName());
+        // 设置自定义参数更新回调
+        AVAnalytics.setOnlineConfigureListener(new AVOnlineConfigureListener() {
+            @Override
+            public void onDataReceived(JSONObject jsonObject) {
+                if (firstOnlineDataReceived) {
+                    firstOnlineDataReceived = false;
+                    RxBus.get().post(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE, "");
+                }
+            }
+        });
     }
 }

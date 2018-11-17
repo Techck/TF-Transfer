@@ -13,4 +13,6 @@ public class RxBusTagConstant {
 
     public static final String CHANGE_TRANSFER_LIST = "CHANGE_TRANSFER_LIST";
 
+    public static final String FIRST_ONLINE_CONFIG_RECEIVE = "FIRST_ONLINE_CONFIG_RECEIVE";
+
 }

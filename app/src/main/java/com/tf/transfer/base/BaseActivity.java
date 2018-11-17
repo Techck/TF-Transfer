@@ -3,9 +3,7 @@ package com.tf.transfer.base;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +13,6 @@ import com.hwangjr.rxbus.RxBus;
 import com.tf.transfer.R;
 import com.tf.transfer.util.StatusBarUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -24,10 +21,10 @@ import java.util.Queue;
  * @date 2018/11/08 17:33
  * @Description
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends BaseBannerAdActivity {
 
     private Queue<Runnable> resumedDo = new LinkedList<>();
-    private BaseActivityHandler mHandler = new BaseActivityHandler(this);
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,48 +102,45 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 状态栏文字是否黑色
-     * @return
      */
     public boolean isTitleBarTextColorBlack() {
         return false;
     }
 
+    /**
+     * 设置标题栏标题
+     */
     public void setTitle(String title) {
-        TextView textView = (TextView) findViewById(R.id.title_bar_title);
+        TextView textView = findViewById(R.id.title_bar_title);
         if (textView != null) {
             textView.setText(title);
         }
     }
 
+    /**
+     * 设置标题栏右侧按钮文本和点击监听器
+     */
     public void setRightButton(String text, View.OnClickListener listener) {
-        TextView rightBt = (TextView) findViewById(R.id.title_bar_right_bt);
+        TextView rightBt = findViewById(R.id.title_bar_right_bt);
         rightBt.setText(text);
         if (listener != null) rightBt.setOnClickListener(listener);
     }
 
-    public void setBackListener (View.OnClickListener listener) {
-        ImageView back = (ImageView) findViewById(R.id.title_bar_back);
+    /**
+     * 设置标题栏返回键监听
+     */
+    public void setBackListener(View.OnClickListener listener) {
+        ImageView back = findViewById(R.id.title_bar_back);
         if (back != null) {
             back.setOnClickListener(listener);
         }
     }
 
+    /**
+     * 添加一个resume任务
+     */
     public void pullRunnable(Runnable runnable) {
         resumedDo.offer(runnable);
-    }
-
-    static class BaseActivityHandler extends Handler {
-
-        private WeakReference<BaseActivity> activity;
-
-        private BaseActivityHandler(BaseActivity activity) {
-            this.activity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
     }
 
 }

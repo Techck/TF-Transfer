@@ -10,12 +10,22 @@ import com.avos.avoscloud.AVAnalytics;
 public class CustomParamManager {
 
     /**
-     * 是否可以上传至服务器
-     * @return
+     * 文件是否可以上传至服务器
      */
     public static boolean canUpload() {
         try {
             return Boolean.parseBoolean(AVAnalytics.getConfigParams(UiUtils.mContext.get(), "can_upload"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 是否展示Banner广告
+     */
+    public static boolean isShowBannerAd() {
+        try {
+            return Boolean.parseBoolean(AVAnalytics.getConfigParams(UiUtils.mContext.get(), "isShowBannerAd"));
         } catch (Exception e) {
             return false;
         }
