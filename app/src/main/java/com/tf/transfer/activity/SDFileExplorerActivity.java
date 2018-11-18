@@ -50,7 +50,7 @@ public class SDFileExplorerActivity extends BaseActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.file_explorer);
+		setContentView(R.layout.activity_file_explorer);
 		listView = findViewById(R.id.explorer_list);
 		fileAdapter = new FileExplorerAdapter(this);
 		listView.setAdapter(fileAdapter);

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableTop="@mipmap/send_64"
-        android:text="发送"
+        android:text="@string/send"
         android:textSize="15sp"
         android:textColor="@color/white"/>
     
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableTop="@mipmap/receive_64"
-        android:text="接收"
+        android:text="@string/receive"
         android:textSize="15sp"
         android:textColor="@color/white"
         android:layout_marginTop="50dp"/>

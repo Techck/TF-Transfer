@@ -145,7 +145,7 @@ public class SendFileActivity extends BaseActivity implements View.OnClickListen
         button_voice.setTextColor(0xffffffff);
         textView_title.setText(R.string.send_file_voice_tip);
         if (voiceView == null) {
-            voiceView = LayoutInflater.from(this).inflate(R.layout.ripple_layout, null);
+            voiceView = LayoutInflater.from(this).inflate(R.layout.layout_send_file_voice_ripple, null);
             RippleLayout rippleLayout = (RippleLayout) voiceView.findViewById(R.id.ripple_layout);
             rippleLayout.startRippleAnimation();
         }

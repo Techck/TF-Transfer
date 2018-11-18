@@ -8,6 +8,9 @@
     <string name="title_activity_barcode_scan">QRcode Scan Activity</string>
     <string name="scaned_text"></string>
     <string name="scan">Scan</string>
+
+    <string name="send">发送</string>
+    <string name="receive">接收</string>
     
     <string name="title_activity_qrcode_generate">QRCode Generate Activity</string>
     <string name="qrcode_generate">Generate</string>
