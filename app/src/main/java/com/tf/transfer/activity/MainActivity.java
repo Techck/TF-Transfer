@@ -34,6 +34,7 @@ import com.hwangjr.rxbus.thread.EventThread;
 import com.tf.transfer.R;
 import com.tf.transfer.adapter.HomeFileAdapter;
 import com.tf.transfer.base.BaseActivity;
+import com.tf.transfer.business.FileTypeQueryThread;
 import com.tf.transfer.constant.PermissionConstant;
 import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.dialog.NormalDialog;
@@ -106,41 +107,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 				break;
 			case R.id.main_photo:
 				type = 1;
-				list_file = FileUtils.getFiles(FileUtils.PHOTO);
+				FileUtils.getFiles(FileUtils.PHOTO, fileTypeQueryCallback);
 				adapter.setType(type);
 				adapter.setFiles(list_file);
 				setButtonColor();
 				break;
 			case R.id.main_doc:
 				type = 2;
-				list_file = FileUtils.getFiles(FileUtils.DOCUMENT);
+				FileUtils.getFiles(FileUtils.DOCUMENT, fileTypeQueryCallback);
 				adapter.setType(type);
 				adapter.setFiles(list_file);
 				setButtonColor();
 				break;
 			case R.id.main_vedio:
 				type = 3;
-				list_file = FileUtils.getFiles(FileUtils.VEDIO);
+				FileUtils.getFiles(FileUtils.VIDEO, fileTypeQueryCallback);
 				adapter.setType(type);
 				adapter.setFiles(list_file);
 				setButtonColor();
 				break;
 			case R.id.main_music:
 				type = 4;
-				list_file = FileUtils.getFiles(FileUtils.MUSIC);
+				FileUtils.getFiles(FileUtils.MUSIC, fileTypeQueryCallback);
 				adapter.setType(type);
 				adapter.setFiles(list_file);
 				setButtonColor();
 				break;
 			case R.id.main_other:
 				type = 5;
-				list_file = FileUtils.getFiles(FileUtils.OTHER);
-				adapter.setType(type);
-				adapter.setFiles(list_file);
+				FileUtils.getFiles(FileUtils.OTHER, fileTypeQueryCallback);
 				setButtonColor();
 				break;
 		}
 	}
+
+	FileTypeQueryThread.FileTypeQueryCallback fileTypeQueryCallback = new FileTypeQueryThread.FileTypeQueryCallback() {
+		@Override
+		public void onResult(ArrayList<File> list) {
+			list_file = list;
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					adapter.setType(type);
+					adapter.setFiles(list_file);
+				}
+			});
+		}
+	};
 
 	private void initSlidingMenu() {
 		drawerLayout = findViewById(R.id.drawerLayout);
@@ -221,9 +234,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		});
 		adapter = new HomeFileAdapter();
 		mListView.setAdapter(adapter);
-		list_file = FileUtils.getFiles(FileUtils.PHOTO);
-		adapter.setType(type);
-		adapter.setFiles(list_file);
+		FileUtils.getFiles(FileUtils.PHOTO, fileTypeQueryCallback);
 	}
 
 	private void initCategoryBar() {
@@ -263,7 +274,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				if (FileUtils.modifyFileName(file, edit.getText().toString())) {
 					getFileList();
-					adapter.setFiles(list_file);
 				}
 			}
 		});
@@ -336,7 +346,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	 * 根据当前type获取文件列表
 	 */
 	private void getFileList(){
-		list_file = FileUtils.getFiles(type);
+		FileUtils.getFiles(type, fileTypeQueryCallback);
 	}
 
 	/**

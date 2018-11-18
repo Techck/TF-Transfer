@@ -3,7 +3,6 @@ package com.tf.transfer.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import android.Manifest;
@@ -15,6 +14,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tf.transfer.business.FileTypeQueryThread;
+
 public class FileUtils {
 
 	public static String MAIN_FILE_PATH = Environment.getExternalStorageDirectory() + "/Transfer";
@@ -24,13 +25,13 @@ public class FileUtils {
 
 	public static final int PHOTO = 1;
 	public static final int DOCUMENT = 2;
-	public static final int VEDIO = 3;
+	public static final int VIDEO = 3;
 	public static final int MUSIC = 4;
 	public static final int OTHER = 5;
 	
 	public static final String[] photo_type = {"png", "jpg", "jpeg"};
 	public static final String[] doc_type = {"doc", "xls", "ppt", "docx", "xlsx", "pptx"};
-	public static final String[] vedio_type = {"avi", "mp4", "mov", "wmv", "3gp", "flv"};
+	public static final String[] video_type = {"avi", "mp4", "mov", "wmv", "3gp", "flv"};
 	public static final String[] music_type = {"mp3", "wma"};
 	private static final String[][] MIME_MapTable={ 
             //{后缀名，MIME类型} 
@@ -102,61 +103,10 @@ public class FileUtils {
             {"",        "*/*"}   
     };
 	
-	public static ArrayList<File> getFiles(int type){
-		File[] files = null;
-		ArrayList<File> list = new ArrayList<>();
-		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-			File dir = new File(FILE_PATH);
-	        if(!dir.exists()){
-	            System.out.println(dir.mkdirs());
-	        }
-	        files = dir.listFiles();
-		}
-		switch (type) {
-		case PHOTO:
-			for(int i = 0;i<files.length;i++){
-				String name = files[i].getName();
-				if(matchFileType(name, photo_type)){
-					list.add(files[i]);
-				}
-			}
-			break;
-		case DOCUMENT:
-			for(int i = 0;i<files.length;i++){
-				String name = files[i].getName();
-				if(matchFileType(name, doc_type)){
-					list.add(files[i]);
-				}
-			}
-			break;
-		case VEDIO:
-			for(int i = 0;i<files.length;i++){
-				String name = files[i].getName();
-				if(matchFileType(name, vedio_type)){
-					list.add(files[i]);
-				}
-			}
-			break;
-		case MUSIC:
-			for(int i = 0;i<files.length;i++){
-				String name = files[i].getName();
-				if(matchFileType(name, music_type)){
-					list.add(files[i]);
-				}
-			}
-			break;
-		case OTHER:
-			for(int i = 0;i<files.length;i++){
-				String name = files[i].getName();
-				if(!matchFileType(name, photo_type)&&!matchFileType(name, doc_type)&&!matchFileType(name, vedio_type)&&!matchFileType(name, music_type)){
-					list.add(files[i]);
-				}
-			}
-			break;
-		}
-		return list;
+	public static void getFiles(int type, FileTypeQueryThread.FileTypeQueryCallback callback){
+		new FileTypeQueryThread(type, callback).start();
 	}
-	
+
 	//匹配文件类型
 	public static boolean matchFileType(String fileName, String[] fileTypes){
 		String fileNames[] = fileName.split("\\.");
@@ -201,18 +151,18 @@ public class FileUtils {
 	}
 	
 	private static String getMIMEType(File file) { 
-	    String type="*/*"; 
+	    String type = "*/*";
 	    String fName = file.getName(); 
-	    //获取后缀名前的分隔符"."在fName中的位置。 
+	    // 获取后缀名前的分隔符"."在fName中的位置。
 	    int dotIndex = fName.lastIndexOf("."); 
 	    if(dotIndex < 0){ 
 	        return type; 
 	    } 
-	    /* 获取文件的后缀名*/ 
-	    String end=fName.substring(dotIndex,fName.length()).toLowerCase(); 
-	    if(end=="")return type; 
-	    //在MIME和文件类型的匹配表中找到对应的MIME类型。 
-	    for(int i=0;i<MIME_MapTable.length;i++){ //MIME_MapTable??在这里你一定有疑问，这个MIME_MapTable是什么？ 
+	    // 获取文件的后缀名
+	    String end = fName.substring(dotIndex,fName.length()).toLowerCase();
+	    if(end.equals("")) return type;
+	    // 在MIME和文件类型的匹配表中找到对应的MIME类型。
+	    for(int i=0;i<MIME_MapTable.length;i++){
 	        if(end.equals(MIME_MapTable[i][0])) 
 	            type = MIME_MapTable[i][1]; 
 	    }        
@@ -280,7 +230,6 @@ public class FileUtils {
     /**
      * 获取文件大小的格式化字符串
      * @param fileLength 单位字节
-     * @return
      */
     public static String getFileSizeStr(long fileLength) {
         if (fileLength < 1024) {

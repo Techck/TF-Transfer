@@ -24,7 +24,7 @@ import java.util.Queue;
 public abstract class BaseActivity extends BaseBannerAdActivity {
 
     private Queue<Runnable> resumedDo = new LinkedList<>();
-    private Handler mHandler = new Handler();
+    public Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
