@@ -8,12 +8,9 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,25 +22,19 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.SaveCallback;
+import com.qq.e.ads.interstitial.AbstractInterstitialADListener;
+import com.qq.e.ads.interstitial.InterstitialAD;
+import com.qq.e.comm.util.AdError;
+import com.tf.transfer.BuildConfig;
 import com.tf.transfer.R;
 import com.tf.transfer.adapter.FileExplorerAdapter;
 import com.tf.transfer.base.BaseActivity;
-import com.tf.transfer.bean.QRCode;
-import com.tf.transfer.bean.TransferUser;
 import com.tf.transfer.business.NativeTaskStrategy;
 import com.tf.transfer.business.NetworkTaskStrategy;
 import com.tf.transfer.business.TaskPrepareStrategy;
 import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.util.ActionEventManager;
-import com.tf.transfer.util.AppUtil;
-import com.tf.transfer.util.DateUtil;
 import com.tf.transfer.util.FileUtils;
-import com.tf.transfer.util.QRCodeUtil;
-import com.tf.transfer.database.SqliteAdapter;
 
 public class SDFileExplorerActivity extends BaseActivity {
 
@@ -87,57 +78,7 @@ public class SDFileExplorerActivity extends BaseActivity {
 		findViewById(R.id.explorer_select).setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
-				List<Map<String, String>> selectItems = fileAdapter.getSelectItems(currentParent);
-				if(selectItems.isEmpty()){
-					Toast.makeText(SDFileExplorerActivity.this, "未选择文件",	Toast.LENGTH_SHORT).show();
-				}else{
-					TaskPrepareStrategy strategy;
-					if(flag){
-						//上传文件
-						showProgressDialog();
-						strategy = new NetworkTaskStrategy(new TaskPrepareStrategy.Callback() {
-							@Override
-							public void success(String id, String qrCodePath) {
-								ActionEventManager.send(ActionEventManager.CREATE_NETWORK_TASK);
-								setResult(2, id, qrCodePath);
-							}
-
-							@Override
-							public void failure(String text) {
-								progressDialog.dismiss();
-								NormalDialog.show(getSupportFragmentManager(), getString(R.string.tip), text, null);
-							}
-
-							@Override
-							public void progress(String text) {
-								if (progressDialog != null) {
-									progressDialog.setMessage("正在上传……(" + text + ")");
-								}
-							}
-						});
-
-					}else{
-						// 处理本地任务
-						strategy = new NativeTaskStrategy(new TaskPrepareStrategy.Callback() {
-							@Override
-							public void success(String id, String qrCodePath) {
-								ActionEventManager.send(ActionEventManager.CREATE_NATIVE_TASK);
-								setResult(1, id, qrCodePath);
-							}
-
-							@Override
-							public void failure(String text) {
-								NormalDialog.show(getSupportFragmentManager(), getString(R.string.tip), text, null);
-							}
-
-							@Override
-							public void progress(String text) {
-
-							}
-						});
-					}
-					strategy.doWork(fileAdapter.getSelectItems(currentParent));
-				}
+				confirm();
 			}
 		});
 		findViewById(R.id.explorer_cancel).setOnClickListener(new OnClickListener(){
@@ -151,6 +92,7 @@ public class SDFileExplorerActivity extends BaseActivity {
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 				flag = isChecked;
+				if (flag) showAdDialog();
 			}
 		});
 	}
@@ -180,6 +122,25 @@ public class SDFileExplorerActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 展示弹窗广告
+     */
+    private void showAdDialog() {
+        final InterstitialAD iad = new InterstitialAD(this, BuildConfig.GDTAdIdAppId, BuildConfig.GDTAdIdFileExplorerInterstitial);
+        iad.setADListener(new AbstractInterstitialADListener() {
+
+            @Override
+            public void onNoAD(AdError error) {
+            }
+
+            @Override
+            public void onADReceive() {
+                iad.show();
+            }
+        });
+        iad.loadAD();
+    }
+
 	/**
 	 * 设置返回参数
 	 */
@@ -192,15 +153,65 @@ public class SDFileExplorerActivity extends BaseActivity {
 		finish();
 	}
 
+	private void confirm() {
+        List<Map<String, String>> selectItems = fileAdapter.getSelectItems(currentParent);
+        if(selectItems.isEmpty()){
+            Toast.makeText(SDFileExplorerActivity.this, "未选择文件",	Toast.LENGTH_SHORT).show();
+        }else{
+            TaskPrepareStrategy strategy;
+            if(flag){
+                //上传文件
+                showProgressDialog();
+                strategy = new NetworkTaskStrategy(new TaskPrepareStrategy.Callback() {
+                    @Override
+                    public void success(String id, String qrCodePath) {
+                        ActionEventManager.send(ActionEventManager.CREATE_NETWORK_TASK);
+                        setResult(2, id, qrCodePath);
+                    }
+
+                    @Override
+                    public void failure(String text) {
+                        progressDialog.dismiss();
+                        NormalDialog.show(getSupportFragmentManager(), getString(R.string.tip), text, null);
+                    }
+
+                    @Override
+                    public void progress(String text) {
+                        if (progressDialog != null) {
+                            progressDialog.setMessage("正在上传……(" + text + ")");
+                        }
+                    }
+                });
+
+            }else{
+                // 处理本地任务
+                strategy = new NativeTaskStrategy(new TaskPrepareStrategy.Callback() {
+                    @Override
+                    public void success(String id, String qrCodePath) {
+                        ActionEventManager.send(ActionEventManager.CREATE_NATIVE_TASK);
+                        setResult(1, id, qrCodePath);
+                    }
+
+                    @Override
+                    public void failure(String text) {
+                        NormalDialog.show(getSupportFragmentManager(), getString(R.string.tip), text, null);
+                    }
+
+                    @Override
+                    public void progress(String text) {
+
+                    }
+                });
+            }
+            strategy.doWork(fileAdapter.getSelectItems(currentParent));
+        }
+    }
+
     private void inflateListView(File[] files){
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (File file : files){
 			Map<String, Object> listItem = new HashMap<>();
-			if (file.isDirectory())			{
-				listItem.put("icon", R.mipmap.folder_64);
-			}else{			
-				listItem.put("icon", R.mipmap.file_64);
-			}			
+			listItem.put("icon", file.isDirectory() ? R.mipmap.folder_64 : R.mipmap.file_64);
 			listItem.put("fileName", file.getName());
 			list.add(listItem);
 		}

@@ -25,6 +25,7 @@ android {
             it.buildConfigField("String", "leanCloudClientKey", leanCloud.clientKey)
             it.buildConfigField("String", "GDTAdIdAppId", GDTAdId.appId)
             it.buildConfigField("String", "GDTAdIdhomeBanner", GDTAdId.homeBanner)
+            it.buildConfigField("String", "GDTAdIdFileExplorerInterstitial", GDTAdId.fileExplorerInterstitial)
         }
     }
 }

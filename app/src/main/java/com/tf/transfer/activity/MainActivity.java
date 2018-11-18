@@ -160,7 +160,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.send_file).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "send");
 				drawerLayout.closeDrawers();
 				// 检查权限
                 String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -174,7 +173,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.receive_file).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "receive");
 				showReceiveChooseDialog();
 			}
 		});
