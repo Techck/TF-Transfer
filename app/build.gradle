@@ -21,17 +21,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
 
-        buildTypes.each {
-            it.buildConfigField("String", "leanCloudApplicationId", leanCloud.applicationId)
-            it.buildConfigField("String", "leanCloudClientKey", leanCloud.clientKey)
-            it.buildConfigField("String", "GDTAdIdAppId", GDTAdId.appId)
-            it.buildConfigField("String", "GDTAdIdhomeBanner", GDTAdId.homeBanner)
-            it.buildConfigField("String", "GDTAdIdFileExplorerInterstitial", GDTAdId.fileExplorerInterstitial)
-        }
+    }
+
+    buildTypes.each {
+        it.buildConfigField("String", "leanCloudApplicationId", leanCloud.applicationId)
+        it.buildConfigField("String", "leanCloudClientKey", leanCloud.clientKey)
+        it.buildConfigField("String", "GDTAdIdAppId", GDTAdId.appId)
+        it.buildConfigField("String", "GDTAdIdhomeBanner", GDTAdId.homeBanner)
+        it.buildConfigField("String", "GDTAdIdFileExplorerInterstitial", GDTAdId.fileExplorerInterstitial)
     }
 
     productFlavors {
         yingyongbao {}
+        baidu {}
+        huawei {}
     }
 
     productFlavors.all {
