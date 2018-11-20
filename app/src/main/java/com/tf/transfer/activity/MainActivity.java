@@ -35,8 +35,10 @@ import com.tf.transfer.R;
 import com.tf.transfer.adapter.HomeFileAdapter;
 import com.tf.transfer.base.BaseActivity;
 import com.tf.transfer.business.FileTypeQueryThread;
+import com.tf.transfer.business.LoadAdManager;
 import com.tf.transfer.constant.PermissionConstant;
 import com.tf.transfer.constant.RxBusTagConstant;
+import com.tf.transfer.dialog.ExitAppDialog;
 import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.dialog.QRCodeDialog;
 import com.tf.transfer.dialog.ReceiveChooseDialog;
@@ -66,6 +68,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	private HomeFileAdapter adapter;
 	private ReceiveChooseDialog dialog;
 	private int type = FileUtils.PHOTO;//照片1  文档2  视频3  音乐4  其他5
+    private long clickExitTime = 0;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,9 +93,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.main_transfer).setOnClickListener(this);
 		findViewById(R.id.main_setting).setOnClickListener(this);
 		findViewById(R.id.main_transfer_list).setOnClickListener(this);
+
+		initExitAd();
 	}
 
-	@Override
+    @Override
 	public void onClick(View arg0) {
 		int id = arg0.getId();
 		switch (id) {
@@ -248,6 +253,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		fileTypeButtons[4].setOnClickListener(this);
 	}
 
+    private void initExitAd() {
+        LoadAdManager.loadExitAppAd(this);
+    }
+
 	private void setButtonColor(){
 		for (int i = 0;i<fileTypeButtons.length;i++) {
 			if (type - 1 == i) {
@@ -359,7 +368,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 			}
 		});
 	}
-	
+
+	@Override
+	public void onBackPressed() {
+        // 退出弹窗
+        if (clickExitTime == 0 && LoadAdManager.getAdView() != null) {
+            ExitAppDialog.show(getSupportFragmentManager(), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        } else {
+            if (System.currentTimeMillis() - clickExitTime < 2000) {
+                finish();
+            } else {
+                clickExitTime = System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(), R.string.exit_two_click_tip,Toast.LENGTH_SHORT).show();
+            }
+        }
+	}
+
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -459,10 +488,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		WifiAdmin.getInstance().closeWifiAp();
-//		Intent intent = new Intent(Intent.ACTION_MAIN);
-//		intent.addCategory(Intent.CATEGORY_HOME);
-//		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		startActivity(intent);
 		System.exit(0);
 	}
 

@@ -11,7 +11,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 3
-        versionName "2.0.1"
+        versionName "2.0.2"
         flavorDimensions "release"
     }
 
@@ -29,6 +29,7 @@ android {
         it.buildConfigField("String", "GDTAdIdAppId", GDTAdId.appId)
         it.buildConfigField("String", "GDTAdIdhomeBanner", GDTAdId.homeBanner)
         it.buildConfigField("String", "GDTAdIdFileExplorerInterstitial", GDTAdId.fileExplorerInterstitial)
+        it.buildConfigField("String", "GDTAdIdExitAppNative", GDTAdId.exitAppNative)
     }
 
     productFlavors {

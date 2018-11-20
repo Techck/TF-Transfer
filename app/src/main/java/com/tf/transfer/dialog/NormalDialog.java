@@ -44,9 +44,9 @@ public class NormalDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_normal, container);
-        TextView titleTv = (TextView) view.findViewById(R.id.normal_dialog_title);
-        TextView contentTv = (TextView) view.findViewById(R.id.normal_dialog_content);
-        TextView secondContentTv = (TextView) view.findViewById(R.id.normal_dialog_second_content);
+        TextView titleTv = view.findViewById(R.id.normal_dialog_title);
+        TextView contentTv = view.findViewById(R.id.normal_dialog_content);
+        TextView secondContentTv = view.findViewById(R.id.normal_dialog_second_content);
         Bundle bundle = getArguments();
         if (bundle != null) {
             titleTv.setText(bundle.getString("title"));
