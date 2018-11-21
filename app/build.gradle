@@ -10,7 +10,7 @@ android {
         applicationId "com.tf.transfer"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 3
+        versionCode 4
         versionName "2.0.2"
         flavorDimensions "release"
     }
@@ -46,7 +46,7 @@ android {
     // 自定义打包时apk名称
     applicationVariants.all { variant ->
         variant.outputs.all { output ->// each 改为 all
-            def fileName = "TF快传_${variant.productFlavors[0].name}_${variant.versionName}_release.apk"
+            def fileName = "TF快传_${variant.versionName}_release.apk"
             def outFile = output.outputFile
             if (outFile != null && outFile.name.endsWith('.apk')) {
                 outputFileName = fileName  //  output.outputFile 改为 outputFileName
