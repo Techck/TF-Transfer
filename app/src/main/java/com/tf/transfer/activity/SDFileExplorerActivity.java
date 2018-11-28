@@ -34,6 +34,7 @@ import com.tf.transfer.business.NetworkTaskStrategy;
 import com.tf.transfer.business.TaskPrepareStrategy;
 import com.tf.transfer.dialog.NormalDialog;
 import com.tf.transfer.util.ActionEventManager;
+import com.tf.transfer.util.CustomParamManager;
 import com.tf.transfer.util.FileUtils;
 
 public class SDFileExplorerActivity extends BaseActivity {
@@ -92,7 +93,7 @@ public class SDFileExplorerActivity extends BaseActivity {
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 				flag = isChecked;
-				if (flag) showAdDialog();
+				if (flag && CustomParamManager.isShowAd()) showAdDialog();
 			}
 		});
 	}

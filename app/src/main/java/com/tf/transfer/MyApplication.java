@@ -2,8 +2,6 @@ package com.tf.transfer;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
@@ -12,7 +10,6 @@ import com.hwangjr.rxbus.RxBus;
 import com.tf.transfer.bean.TransferUser;
 import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.util.CustomParamManager;
-import com.tf.transfer.util.FileUtils;
 import com.tf.transfer.util.SPUtil;
 import com.tf.transfer.util.UiUtils;
 
@@ -22,7 +19,6 @@ import java.lang.ref.WeakReference;
 
 /**
  * @author huangyue
- * @Package com.example.transfer
  * @date 2018/11/07 15:43
  * @Description
  */
@@ -46,7 +42,8 @@ public class MyApplication extends Application {
             public void onDataReceived(JSONObject jsonObject) {
                 if (firstOnlineDataReceived) {
                     firstOnlineDataReceived = false;
-                    RxBus.get().post(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE, "");
+                    if (CustomParamManager.isShowAd())
+                        RxBus.get().post(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE, "");
                 }
             }
         });

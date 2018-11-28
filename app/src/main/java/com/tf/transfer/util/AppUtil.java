@@ -1,15 +1,13 @@
 package com.tf.transfer.util;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+
+import com.tf.transfer.BuildConfig;
 
 /**
  * @author huangyue
@@ -81,6 +79,29 @@ public class AppUtil {
             }
         }
         return true;
+    }
+
+    /**
+     * 获取渠道名
+     */
+    public static String getChannel(Context context) {
+        if (context == null) return "";
+        try {
+            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            String channel = appInfo.metaData.getString("leancloud");
+            if (channel == null) return "";
+            return channel;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * 获取版本号
+     */
+    public static String getVersionName() {
+        return BuildConfig.VERSION_NAME;
     }
 
 }

@@ -93,8 +93,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.main_transfer).setOnClickListener(this);
 		findViewById(R.id.main_setting).setOnClickListener(this);
 		findViewById(R.id.main_transfer_list).setOnClickListener(this);
-
-		initExitAd();
 	}
 
     @Override
@@ -482,6 +480,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Subscribe(thread = EventThread.MAIN_THREAD, tags = {@Tag(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE)})
     public void mainBannerAdShow(String temp) {
 		checkAndRequestAdPermission();
+		initExitAd();
 	}
 
     @Override

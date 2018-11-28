@@ -128,6 +128,6 @@ public abstract class BaseBannerAdActivity extends AppCompatActivity {
 
     public boolean isShowAD() {
         // 从自定义参数中获取，默认是false
-        return CustomParamManager.isShowBannerAd();
+        return CustomParamManager.isShowAd();
     }
 }
