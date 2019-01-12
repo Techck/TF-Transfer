@@ -2,6 +2,7 @@ package com.tf.transfer.activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 
@@ -64,7 +65,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	private Button[] fileTypeButtons = new Button[5];
 	private AutoCompleteTextView acTextView;
 	private DrawerLayout drawerLayout;
-	private ArrayList<File> list_file = new ArrayList<>();
+	private List<File> list_file = new ArrayList<>();
 	private HomeFileAdapter adapter;
 	private ReceiveChooseDialog dialog;
 	private int type = FileUtils.PHOTO;//照片1  文档2  视频3  音乐4  其他5
@@ -146,7 +147,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 	FileTypeQueryThread.FileTypeQueryCallback fileTypeQueryCallback = new FileTypeQueryThread.FileTypeQueryCallback() {
 		@Override
-		public void onResult(ArrayList<File> list) {
+		public void onResult(List<File> list) {
 			list_file = list;
 			mHandler.post(new Runnable() {
 				@Override

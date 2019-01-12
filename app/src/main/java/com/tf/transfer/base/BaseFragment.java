@@ -3,10 +3,9 @@ package com.tf.transfer.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
-import com.avos.avoscloud.AVAnalytics;
 import com.hwangjr.rxbus.RxBus;
+import com.tencent.stat.StatService;
 
 /**
  * @author huangyue
@@ -31,12 +30,12 @@ public class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        AVAnalytics.onFragmentStart(this.getClass().getSimpleName());
+        StatService.trackBeginPage(getContext(), getClass().getSimpleName());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        AVAnalytics.onFragmentEnd(this.getClass().getSimpleName());
+        StatService.trackEndPage(getContext(), getClass().getSimpleName());
     }
 }

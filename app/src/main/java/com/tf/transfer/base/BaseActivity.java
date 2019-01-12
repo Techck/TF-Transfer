@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVAnalytics;
 import com.hwangjr.rxbus.RxBus;
+import com.tencent.stat.StatService;
 import com.tf.transfer.R;
 import com.tf.transfer.util.StatusBarUtils;
 
@@ -48,7 +48,7 @@ public abstract class BaseActivity extends BaseBannerAdActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AVAnalytics.onResume(this);
+        StatService.onResume(this);
         Runnable runnable;
         while ((runnable = resumedDo.poll()) != null) {
             mHandler.post(runnable);
@@ -58,7 +58,7 @@ public abstract class BaseActivity extends BaseBannerAdActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        AVAnalytics.onPause(this);
+        StatService.onPause(this);
     }
 
     private void initBlackView() {

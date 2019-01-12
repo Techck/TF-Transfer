@@ -1,11 +1,11 @@
 package com.tf.transfer.util;
 
-import com.avos.avoscloud.AVAnalytics;
+import com.tencent.stat.StatService;
 
 /**
  * @author huangyue
  * @date 2018/11/08 20:48
- * @Description
+ * @Description 事件埋点
  */
 public class ActionEventManager {
 
@@ -18,7 +18,7 @@ public class ActionEventManager {
     public static final String RECEIVE_FILE_BY_VOICE = "RECEIVE_FILE_BY_VOICE";
 
     public static void send(String eventName) {
-        AVAnalytics.onEvent(UiUtils.mContext.get(), eventName);
+        StatService.trackCustomKVEvent(UiUtils.mContext.get(), eventName, null);
     }
 
 }

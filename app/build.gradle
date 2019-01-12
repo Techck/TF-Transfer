@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 def leanCloud = rootProject.ext.leanCloud
 def GDTAdId = rootProject.ext.GDTAdId
+def mta = rootProject.ext.mta
 
 android {
     compileSdkVersion 26
@@ -10,9 +11,12 @@ android {
         applicationId "com.tf.transfer"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 5
-        versionName "2.0.3"
+        versionCode 6
+        versionName "2.0.4"
         flavorDimensions "release"
+        ndk {
+            abiFilters 'armeabi', 'x86'
+        }
     }
 
     buildTypes {
@@ -40,7 +44,10 @@ android {
     }
 
     productFlavors.all {
-        flavor -> flavor.manifestPlaceholders = [LEANCLOUD_CHANNEL_VALUE: name]
+        flavor -> flavor.manifestPlaceholders = [
+                MTA_APPKEY: mta.appKey,
+                MTA_CHANNEL: name
+        ]
     }
 
     // 自定义打包时apk名称
@@ -71,4 +78,8 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.hwangjr.rxbus:rxbus:1.0.6'
+    // MTA主包
+    implementation 'com.qq.mta:mta:3.4.2'
+    // MID基础包
+    implementation 'com.tencent.mid:mid:3.73-release'
 }

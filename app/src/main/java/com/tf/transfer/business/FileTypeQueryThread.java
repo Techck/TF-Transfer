@@ -6,6 +6,7 @@ import com.tf.transfer.util.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author huangyue
@@ -26,11 +27,11 @@ public class FileTypeQueryThread extends Thread {
     public void run() {
         super.run();
         File[] files = null;
-        ArrayList<File> list = new ArrayList<>();
+        List<File> list = new ArrayList<>();
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             File dir = new File(FileUtils.FILE_PATH);
             if(!dir.exists()){
-                System.out.println(dir.mkdirs());
+                dir.mkdirs();
             }
             files = dir.listFiles();
         }
@@ -39,45 +40,45 @@ public class FileTypeQueryThread extends Thread {
         }
         switch (type) {
             case FileUtils.PHOTO:
-                for(int i = 0;i<files.length;i++){
-                    String name = files[i].getName();
+                for(File file : files){
+                    String name = file.getName();
                     if(FileUtils.matchFileType(name, FileUtils.photo_type)){
-                        list.add(files[i]);
+                        list.add(file);
                     }
                 }
                 break;
             case FileUtils.DOCUMENT:
-                for(int i = 0;i<files.length;i++){
-                    String name = files[i].getName();
+                for(File file : files) {
+                    String name = file.getName();
                     if(FileUtils.matchFileType(name, FileUtils.doc_type)){
-                        list.add(files[i]);
+                        list.add(file);
                     }
                 }
                 break;
             case FileUtils.VIDEO:
-                for(int i = 0;i<files.length;i++){
-                    String name = files[i].getName();
+                for(File file : files){
+                    String name = file.getName();
                     if(FileUtils.matchFileType(name, FileUtils.video_type)){
-                        list.add(files[i]);
+                        list.add(file);
                     }
                 }
                 break;
             case FileUtils.MUSIC:
-                for(int i = 0;i<files.length;i++){
-                    String name = files[i].getName();
+                for(File file : files){
+                    String name = file.getName();
                     if(FileUtils.matchFileType(name, FileUtils.music_type)){
-                        list.add(files[i]);
+                        list.add(file);
                     }
                 }
                 break;
             case FileUtils.OTHER:
-                for(int i = 0;i<files.length;i++){
-                    String name = files[i].getName();
+                for(File file : files){
+                    String name = file.getName();
                     if(!FileUtils.matchFileType(name, FileUtils.photo_type)
                             && !FileUtils.matchFileType(name, FileUtils.doc_type)
                             && !FileUtils.matchFileType(name, FileUtils.video_type)
                             && !FileUtils.matchFileType(name, FileUtils.music_type)){
-                        list.add(files[i]);
+                        list.add(file);
                     }
                 }
                 break;
@@ -86,7 +87,7 @@ public class FileTypeQueryThread extends Thread {
     }
 
     public interface FileTypeQueryCallback {
-        void onResult(ArrayList<File> list);
+        void onResult(List<File> list);
     }
 
 }

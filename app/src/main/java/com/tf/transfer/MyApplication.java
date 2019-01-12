@@ -7,6 +7,8 @@ import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVOnlineConfigureListener;
 import com.hwangjr.rxbus.RxBus;
+import com.tencent.stat.StatConfig;
+import com.tencent.stat.StatService;
 import com.tf.transfer.bean.TransferUser;
 import com.tf.transfer.constant.RxBusTagConstant;
 import com.tf.transfer.util.CustomParamManager;
@@ -32,8 +34,8 @@ public class MyApplication extends Application {
         super.onCreate();
         UiUtils.mContext = new WeakReference<Context>(this);
         AVOSCloud.initialize(this, BuildConfig.leanCloudApplicationId, BuildConfig.leanCloudClientKey);
-        // 开启统计SDK
-        AVAnalytics.enableCrashReport(this, true);
+        // 基础统计API
+        StatService.registerActivityLifecycleCallbacks(this);
         // 设置用户名
         TransferUser.getInstance().setUsername(SPUtil.getUserName());
         // 设置自定义参数更新回调
