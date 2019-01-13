@@ -49,7 +49,7 @@ public abstract class BaseBannerAdActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // 判断是否允许加载广告
-        if (isShowAD())
+        if (bannerView == null && isShowAD())
             checkAndRequestAdPermission();
     }
 

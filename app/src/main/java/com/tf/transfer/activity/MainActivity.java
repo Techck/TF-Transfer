@@ -96,7 +96,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		findViewById(R.id.main_transfer_list).setOnClickListener(this);
 	}
 
-    @Override
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (LoadAdManager.getAdView() == null && isShowAD()) {
+			checkAndRequestAdPermission();
+			initExitAd();
+		}
+	}
+
+	@Override
 	public void onClick(View arg0) {
 		int id = arg0.getId();
 		switch (id) {
@@ -477,12 +486,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
     }
-
-    @Subscribe(thread = EventThread.MAIN_THREAD, tags = {@Tag(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE)})
-    public void mainBannerAdShow(String temp) {
-		checkAndRequestAdPermission();
-		initExitAd();
-	}
 
     @Override
 	protected void onDestroy() {
