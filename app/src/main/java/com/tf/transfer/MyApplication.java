@@ -27,8 +27,6 @@ import java.lang.ref.WeakReference;
 
 public class MyApplication extends Application {
 
-    private boolean firstOnlineDataReceived = true;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,16 +36,5 @@ public class MyApplication extends Application {
         StatService.registerActivityLifecycleCallbacks(this);
         // 设置用户名
         TransferUser.getInstance().setUsername(SPUtil.getUserName());
-        // 设置自定义参数更新回调
-        AVAnalytics.setOnlineConfigureListener(new AVOnlineConfigureListener() {
-            @Override
-            public void onDataReceived(JSONObject jsonObject) {
-                if (firstOnlineDataReceived) {
-                    firstOnlineDataReceived = false;
-                    if (CustomParamManager.isShowAd())
-                        RxBus.get().post(RxBusTagConstant.FIRST_ONLINE_CONFIG_RECEIVE, "");
-                }
-            }
-        });
     }
 }

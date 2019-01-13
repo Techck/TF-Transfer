@@ -1,7 +1,6 @@
 package com.tf.transfer.util;
 
-import com.avos.avoscloud.AVAnalytics;
-import com.tf.transfer.BuildConfig;
+import com.tencent.stat.StatConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,7 +8,7 @@ import org.json.JSONObject;
 /**
  * @author huangyue
  * @date 2018/11/08 21:00
- * @Description
+ * @Description 自定义参数管理类
  */
 public class CustomParamManager {
 
@@ -20,7 +19,7 @@ public class CustomParamManager {
      */
     public static boolean canUpload() {
         try {
-            return Boolean.parseBoolean(AVAnalytics.getConfigParams(UiUtils.mContext.get(), "can_upload"));
+            return Boolean.parseBoolean(StatConfig.getCustomProperty(UiUtils.mContext.get(), "can_upload"));
         } catch (Exception e) {
             return false;
         }
@@ -33,7 +32,7 @@ public class CustomParamManager {
     public static boolean isShowAd() {
         if (isShowAd != null) return isShowAd;
         // 根据屏蔽的渠道和版本号来判断
-        String adShieldParamStr = AVAnalytics.getConfigParams(UiUtils.mContext.get(), "adShieldParam");
+        String adShieldParamStr = StatConfig.getCustomProperty(UiUtils.mContext.get(), "adShieldParam");
         if (adShieldParamStr == null || adShieldParamStr.isEmpty()) {
             return false;
         }
